@@ -10,7 +10,6 @@ import android.content.Intent;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent startService = new Intent(context, MonitorService.class);
-        context.startService(startService);
+
     }
 }
