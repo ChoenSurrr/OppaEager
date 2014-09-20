@@ -2,6 +2,7 @@ package eager.oppa.choensurrr.com.oppaeager;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -9,12 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.Wearable;
 
 
 public class InputActivity extends Activity implements View.OnClickListener {
@@ -231,52 +226,20 @@ public class InputActivity extends Activity implements View.OnClickListener {
                     break;
                 default:
 
-                    finish();
-                    return;
+                    //finish();
+                    bankData = SHB;
+                    //return;
             }
 
             String s1 = bankData[first].substring(0, 2);
             String s2 = bankData[second].substring(2, 4);
 
             Log.d("InputActivity", "s1 = " + s1 + ", s2 = " + s2);
-            sendMessage("shb", s1 + s2);
-
+            ((CardApplication)getApplication()).sendMessage("shb", s1 + s2);
             finish();
             return;
         }
 
         updateInputEntries();
-    }
-
-
-
-    private void sendMessage(String bank, String number) {
-        CardApplication app = (CardApplication)getApplication();
-        final GoogleApiClient client = app.getClient();
-
-        final String msg = bank + "/" + number;
-
-        if (client.isConnected()) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    NodeApi.GetConnectedNodesResult nodes =
-                            Wearable.NodeApi.getConnectedNodes(client).await();
-                    for (Node node : nodes.getNodes()) {
-                        MessageApi.SendMessageResult result =
-                                Wearable.MessageApi.sendMessage(client, node.getId(),
-                                        "bank/securecode",
-                                        msg.getBytes()).await();
-                        if(!result.getStatus().isSuccess()){
-                            Log.e(TAG, "error");
-                        } else {
-                            Log.i(TAG, "success!! sent to: " + node.getDisplayName());
-                        }
-                    }
-                }
-            }).start();
-        } else {
-            Log.i(TAG, "google api client is not connected");
-        }
     }
 }

@@ -7,6 +7,9 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 /**
@@ -68,5 +71,35 @@ public class CardApplication extends Application {
 
     int getBank() {
         return mBank;
+    }
+
+
+    void sendMessage(String bank, String number) {
+        final GoogleApiClient client = getClient();
+
+        final String msg = bank + "/" + number;
+
+        if (client.isConnected()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    NodeApi.GetConnectedNodesResult nodes =
+                            Wearable.NodeApi.getConnectedNodes(client).await();
+                    for (Node node : nodes.getNodes()) {
+                        MessageApi.SendMessageResult result =
+                                Wearable.MessageApi.sendMessage(client, node.getId(),
+                                        "bank/securecode",
+                                        msg.getBytes()).await();
+                        if(!result.getStatus().isSuccess()){
+                            Log.e(TAG, "error");
+                        } else {
+                            Log.i(TAG, "success!! sent to: " + node.getDisplayName());
+                        }
+                    }
+                }
+            }).start();
+        } else {
+            Log.i(TAG, "google api client is not connected");
+        }
     }
 }

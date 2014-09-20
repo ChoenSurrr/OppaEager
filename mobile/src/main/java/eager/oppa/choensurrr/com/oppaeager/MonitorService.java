@@ -14,11 +14,17 @@ import android.util.Log;
 
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.NotificationCompat.WearableExtender;
 
 import java.util.List;
 
 
+/**
+ * Created by ganadist on 14. 9. 19.
+ * Last modified by Ian.
+ *
+ * Monitors running Internet backing application and
+ *  detects the activity inputting security card number
+ */
 public class MonitorService extends Service {
 
     private static final int MSG_CHECK_ACTIVITY = 0;
@@ -72,17 +78,24 @@ public class MonitorService extends Service {
         } else if (name.equals(CITI)) {
             bankId = CardApplication.BANK_CITI;
             Log.v("Monitor", "citi bank detected");
-            this.sendNotification(CITI);
+            this.sendNotification(bankId);
         } else if (name.equals(SCB)) {
             bankId = CardApplication.BANK_SCB;
             Log.v("Monitor", "standard chartered bank detected");
+        } else {
+            Log.v("Monitor", "bank unknown");
         }
         mTopActivity = name;
 
         ((CardApplication)getApplication()).setBank(bankId);
     }
 
-    private void sendNotification(ComponentName componentName) {
+    /**
+     * sendNotification: send notifications to mobile & wear
+     *
+     * @param bankId    defined in CardApplication class
+     */
+    private void sendNotification(int bankId) {
         int notificationId = 001;
         // Build intent for notification content
         Intent inputIntent = new Intent(this, InputActivity.class);
@@ -90,20 +103,44 @@ public class MonitorService extends Service {
         PendingIntent inputPendingIntent =
                 PendingIntent.getActivity(this, 0, inputIntent, 0);
 
+        // get contentAction, contentTitle & contentText
+        int contentAction = -1;
+        int contentTitle = -1;
+        int contentText = -1;
+        contentAction = R.string.monitor_content_action;
+        switch (bankId) {
+            case CardApplication.BANK_SHB:
+                contentTitle = R.string.monitor_shb_content_title;
+                contentText = R.string.monitor_shb_content_text;
+                break;
+            case CardApplication.BANK_CITI:
+                contentTitle = R.string.monitor_citi_content_title;
+                contentText = R.string.monitor_citi_content_text;
+                break;
+            case CardApplication.BANK_SCB:
+                contentTitle = R.string.monitor_scb_content_title;
+                contentText = R.string.monitor_scb_content_text;
+                break;
+            case CardApplication.BANK_UNKNOWN:
+            default:
+                contentTitle = R.string.monitor_scb_content_title;
+                contentText = R.string.monitor_scb_content_text;
+                break;
+        }
         // Create the action
         NotificationCompat.Action action =
                 new NotificationCompat.Action.Builder(R.drawable.oppa_icon,
-                        getString(R.string.monitor_citi_content_action), inputPendingIntent)
+                        getString(contentAction), inputPendingIntent)
                         .build();
 
         // notification to mobile & wear
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.oppa_icon)
-                        .setContentTitle(getString(R.string.monitor_citi_content_title))
-                        .setContentText(getString(R.string.monitor_citi_content_text))
+                        .setContentTitle(getString(contentTitle))
+                        .setContentText(getString(contentText))
                         .setContentIntent(inputPendingIntent)
-                        .addAction(R.drawable.oppa_icon, getString(R.string.monitor_citi_content_action), inputPendingIntent);
+                        .addAction(R.drawable.oppa_icon, getString(contentAction), inputPendingIntent);
 
         // Get an instance of the NotificationManager service
         NotificationManagerCompat notificationManager =
