@@ -17,6 +17,13 @@ public class CardApplication extends Application {
 
     private GoogleApiClient mGoogleAppiClient;
 
+    static final int BANK_UNKNOWN = -1;
+    static final int BANK_SHB = 0;
+    static final int BANK_SCB = 1;
+    static final int BANK_CITI = 2;
+
+    private int mBank = BANK_UNKNOWN;
+
     private void GmsInit() {
         mGoogleAppiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -52,5 +59,14 @@ public class CardApplication extends Application {
         Intent startService = new Intent(this, MonitorService.class);
         startService(startService);
         GmsInit();
+    }
+
+    void setBank(int bank) {
+        mBank = bank;
+        Log.d(TAG, "update band id :" + bank);
+    }
+
+    int getBank() {
+        return mBank;
     }
 }

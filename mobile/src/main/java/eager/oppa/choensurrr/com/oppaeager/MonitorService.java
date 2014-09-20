@@ -58,19 +58,28 @@ public class MonitorService extends Service {
         List<ActivityManager.RunningTaskInfo> info = mAm.getRunningTasks(1);
         ComponentName name = info.get(0).topActivity;
 
+        if (name.getPackageName().equals(getPackageName())) {
+            return;
+        }
         if (mTopActivity.equals(name)) {
             return;
         }
+        int bankId = CardApplication.BANK_UNKNOWN;
         Log.v("Monitor", "topActivity = " + name);
         if (name.equals(SHB)) {
+            bankId = CardApplication.BANK_SHB;
             Log.v("Monitor", "shinhan bank detected");
         } else if (name.equals(CITI)) {
+            bankId = CardApplication.BANK_CITI;
             Log.v("Monitor", "citi bank detected");
             this.sendNotification(CITI);
         } else if (name.equals(SCB)) {
+            bankId = CardApplication.BANK_SCB;
             Log.v("Monitor", "standard chartered bank detected");
         }
         mTopActivity = name;
+
+        ((CardApplication)getApplication()).setBank(bankId);
     }
 
     private void sendNotification(ComponentName componentName) {

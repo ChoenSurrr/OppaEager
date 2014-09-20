@@ -212,7 +212,7 @@ public class InputActivity extends Activity implements View.OnClickListener {
                 }
             }).start();
         } else {
-
+            Log.i(TAG, "google api client is not connected");
         }
     }
 }
