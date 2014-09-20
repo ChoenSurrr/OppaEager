@@ -75,6 +75,7 @@ public class MonitorService extends Service {
         if (name.equals(SHB)) {
             bankId = CardApplication.BANK_SHB;
             Log.v("Monitor", "shinhan bank detected");
+            this.sendNotification(bankId);
         } else if (name.equals(CITI)) {
             bankId = CardApplication.BANK_CITI;
             Log.v("Monitor", "citi bank detected");
@@ -82,6 +83,7 @@ public class MonitorService extends Service {
         } else if (name.equals(SCB)) {
             bankId = CardApplication.BANK_SCB;
             Log.v("Monitor", "standard chartered bank detected");
+            this.sendNotification(bankId);
         } else {
             Log.v("Monitor", "bank unknown");
         }
