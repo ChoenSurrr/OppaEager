@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">OppaEager</string>
     <string name="hello_world">Hello world!</string>
+    <string name="unknown_value">X</string>
+    <string name="value_entered">V</string>
+    <string name="clear">Clear</string>
+
     <string name="action_settings">Settings</string>
     <string name="title_activity_setup">SetupActivity</string>
     <string name="title_section1">Section 1</string>
@@ -11,7 +14,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
-    <string name="unknown_value">X</string>
-    <string name="value_entered">V</string>
-    <string name="clear">Clear</string>
+    <string name="monitor_citi_content_title">씨티은행</string>
+    <string name="monitor_citi_content_text">보안카드 번호를 입력해 주세요.</string>
+    <string name="monitor_citi_content_action">오빵~❤</string>
 </resources>
