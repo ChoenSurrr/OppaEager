@@ -208,34 +208,42 @@ public class InputActivity extends Activity implements View.OnClickListener {
 
 
         if (mPosition == MAX_NUMBER_ITEM) {
-            int first = mInputText[0].getValue() * 10 + mInputText[1].getValue();
-            int second = mInputText[2].getValue() * 10 + mInputText[3].getValue();
+            int first = mInputText[0].getValue() * 10 + mInputText[1].getValue() - 1;
+            int second = mInputText[2].getValue() * 10 + mInputText[3].getValue() - 1;
             final int bankId = ((CardApplication)getApplication()).getBank();
             String[] bankData;
+            int bankNameId;
+            String bankName;
 
             switch(bankId) {
                 case CardApplication.BANK_SHB:
+                    bankNameId = R.string.bank_shb;
                     bankData = SHB;
                     break;
 
                 case CardApplication.BANK_CITI:
+                    bankNameId = R.string.bank_citi;
                     bankData = CITI;
                     break;
                 case CardApplication.BANK_SCB:
+                    bankNameId = R.string.bank_scb;
                     bankData = SCB;
                     break;
                 default:
 
                     //finish();
                     bankData = SHB;
+                    bankNameId= R.string.bank_shb;
                     //return;
             }
 
             String s1 = bankData[first].substring(0, 2);
             String s2 = bankData[second].substring(2, 4);
 
+            bankName = getResources().getString(bankNameId);
+
             Log.d("InputActivity", "s1 = " + s1 + ", s2 = " + s2);
-            ((CardApplication)getApplication()).sendMessage("shb", s1 + s2);
+            ((CardApplication)getApplication()).sendMessage(bankName, s1 + s2);
             finish();
             return;
         }

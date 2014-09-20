@@ -5,7 +5,9 @@
     <string name="unknown_value">X</string>
     <string name="value_entered">V</string>
     <string name="clear">Clear</string>
-
+    <string name="bank_shb">Shinhan Bank</string>
+    <string name="bank_scb">Standard Chartered Bank</string>
+    <string name="bank_citi">CITI Bank</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_setup">SetupActivity</string>
     <string name="title_section1">Section 1</string>

@@ -75,24 +75,24 @@ public class MonitorService extends Service {
         if (name.equals(SHB)) {
             bankId = CardApplication.BANK_SHB;
             Log.v("Monitor", "shinhan bank detected");
-            this.sendNotification(bankId);
         } else if (name.equals(CITI)) {
             bankId = CardApplication.BANK_CITI;
             Log.v("Monitor", "citi bank detected");
-            this.sendNotification(bankId);
         } else if (name.equals(SCB)) {
             bankId = CardApplication.BANK_SCB;
             Log.v("Monitor", "standard chartered bank detected");
-            this.sendNotification(bankId);
         } else {
             Log.v("Monitor", "bank unknown");
         }
         mTopActivity = name;
 
-        ((CardApplication)getApplication()).setBank(bankId);
+        if (bankId != CardApplication.BANK_UNKNOWN) {
+            ((CardApplication) getApplication()).setBank(bankId);
+            this.sendNotification(bankId);
+        }
     }
 
-    /**
+    /**this.sendNotification(bankId);
      * sendNotification: send notifications to mobile & wear
      *
      * @param bankId    defined in CardApplication class
@@ -135,6 +135,9 @@ public class MonitorService extends Service {
                         getString(contentAction), inputPendingIntent)
                         .build();
 
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender();
+
         // notification to mobile & wear
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
@@ -142,6 +145,8 @@ public class MonitorService extends Service {
                         .setContentTitle(getString(contentTitle))
                         .setContentText(getString(contentText))
                         .setContentIntent(inputPendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .extend(wearableExtender)
                         .addAction(R.drawable.oppa_icon, getString(contentAction), inputPendingIntent);
 
         // Get an instance of the NotificationManager service

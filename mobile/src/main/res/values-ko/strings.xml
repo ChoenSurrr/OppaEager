@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bank_shb">신한은행</string>
+    <string name="bank_scb">제일은행</string>
+    <string name="bank_citi">씨티은행</string>
+</resources>
