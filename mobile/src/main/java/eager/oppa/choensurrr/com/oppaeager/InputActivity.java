@@ -3,14 +3,13 @@ package eager.oppa.choensurrr.com.oppaeager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
@@ -90,6 +89,19 @@ public class InputActivity extends Activity implements View.OnClickListener {
 
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        clear();
+        updateInputEntries();
+    }
+
+    @Override
+    protected void onPause() {
+        clear();
+        super.onPause();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.input, menu);
@@ -113,6 +125,40 @@ public class InputActivity extends Activity implements View.OnClickListener {
             v.clear();
         }
         mPosition = 0;
+    }
+
+    private void updateInputEntries() {
+        SparseBooleanArray list = new SparseBooleanArray();
+        int [] enableAllItems = {
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        };
+        int [] enableItems ;
+
+        if (mPosition == 0 || mPosition == 2) {
+            int [] items = {
+                    0, 1, 2, 3, 10 //clear
+            };
+            enableItems = items;
+
+        } else {
+            int v = mInputText[mPosition - 1].getValue();
+            if (v == 3) {
+                int[] items = {
+                        0, 10//clear
+                };
+                enableItems = items;
+            } else {
+                enableItems = enableAllItems;
+            }
+        }
+
+        for (int i: enableItems) {
+            list.append(i, true);
+        }
+
+        for (int i: enableAllItems) {
+            mButtons[i].setEnabled(list.get(i, false));
+        }
     }
 
     @Override
@@ -160,28 +206,46 @@ public class InputActivity extends Activity implements View.OnClickListener {
             return;
         }
 
-        if (mPosition == 0 || mPosition == 2) {
-            int [] enabledItems = {
-                    0, 1, 2, 3, 11 //clear
-            };
-            for (int i = 0; i < BUTTON_IDS.length; i++) {
-                mButtons[i].setEnabled(true);
-            }
-        } else {
 
-        }
         mInputText[mPosition].setTextDelayed(Integer.toString(number));
 
         mPosition += 1;
+
+
         if (mPosition == MAX_NUMBER_ITEM) {
             int first = mInputText[0].getValue() * 10 + mInputText[1].getValue();
             int second = mInputText[2].getValue() * 10 + mInputText[3].getValue();
-            String s1 = SCB[first].substring(0, 2);
-            String s2 = SCB[second].substring(2, 4);
+            final int bankId = ((CardApplication)getApplication()).getBank();
+            String[] bankData;
+
+            switch(bankId) {
+                case CardApplication.BANK_SHB:
+                    bankData = SHB;
+                    break;
+
+                case CardApplication.BANK_CITI:
+                    bankData = CITI;
+                    break;
+                case CardApplication.BANK_SCB:
+                    bankData = SCB;
+                    break;
+                default:
+
+                    finish();
+                    return;
+            }
+
+            String s1 = bankData[first].substring(0, 2);
+            String s2 = bankData[second].substring(2, 4);
 
             Log.d("InputActivity", "s1 = " + s1 + ", s2 = " + s2);
             sendMessage("shb", s1 + s2);
+
+            finish();
+            return;
         }
+
+        updateInputEntries();
     }
 
 
