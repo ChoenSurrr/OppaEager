@@ -1,9 +1,13 @@
 package eager.oppa.choensurrr.com.oppaeager;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.widget.TextView;
 
 public class PasswordShowActivity extends Activity {
@@ -14,11 +18,13 @@ public class PasswordShowActivity extends Activity {
 
     private boolean mLayoutInflateCompleted = false;
     private boolean mResumed = false;
+    private PowerManager mPm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_show);
+        mPm = (PowerManager)getSystemService(Context.POWER_SERVICE);
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
 
@@ -32,24 +38,32 @@ public class PasswordShowActivity extends Activity {
 
     }
 
+    private static final String TAG = "PasswordActivity";
     private void updateView() {
+        Log.v(TAG, "resumed = " + mResumed + ", inflated = " + mLayoutInflateCompleted);
         if (mResumed && mLayoutInflateCompleted) {
             Intent intent = getIntent();
-            Bundle bundle = intent.getExtras();
+            Log.v(TAG, "intent = " + intent);
+            if (intent == null)
+                return;
+            String bank = intent.getStringExtra("bank");
+            String password = intent.getStringExtra("password");
 
             final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-            mTextView = (TextView) stub.findViewById(R.id.text);
-            mTextView.setText(bundle.getString("bank"));
+            if (bank != null) {
+                mTextView = (TextView) stub.findViewById(R.id.text);
+                mTextView.setText(bank);
+            }
 
-            String password = bundle.getString("password");
+            if (password != null) {
+                String s1 = password.substring(0, 2);
+                String s2 = password.substring(2, 4);
 
-            String s1 = password.substring(0, 2);
-            String s2 = password.substring(2, 4);
-
-            firstNumber = (TextView) stub.findViewById(R.id.firstNumber);
-            firstNumber.setText(s1);
-            secondNumber = (TextView) stub.findViewById(R.id.secondNumber);
-            secondNumber.setText(s2);
+                firstNumber = (TextView) stub.findViewById(R.id.firstNumber);
+                firstNumber.setText(s1);
+                secondNumber = (TextView) stub.findViewById(R.id.secondNumber);
+                secondNumber.setText(s2);
+            }
         }
     }
 
@@ -58,11 +72,18 @@ public class PasswordShowActivity extends Activity {
         super.onResume();
         mResumed = true;
         updateView();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 15 * 1000);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mResumed = false;
+        //mResumed = false;
     }
 }

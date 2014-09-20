@@ -11,7 +11,7 @@ import com.google.android.gms.wearable.WearableListenerService;
 /**
  * Created by blueguy on 14. 9. 20.
  */
-public class keyListenerService extends WearableListenerService {
+public class ListenerService extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
@@ -21,8 +21,9 @@ public class keyListenerService extends WearableListenerService {
             int pos = message.indexOf('/');
 
             String bank = message.substring(0, pos);
-            String password = message.substring(pos);
+            String password = message.substring(pos + 1);
             Intent intent = new Intent(this, PasswordShowActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("bank", bank);
             intent.putExtra("password", password);
             startActivity(intent);
