@@ -14,7 +14,13 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
+    <string name="monitor_shb_content_title">신한은행</string>
+    <string name="monitor_shb_content_text">신한은행 보안카드 확인해줘, 어서~</string>
     <string name="monitor_citi_content_title">씨티은행</string>
-    <string name="monitor_citi_content_text">보안카드 번호를 입력해 주세요.</string>
-    <string name="monitor_citi_content_action">오빵~❤</string>
+    <string name="monitor_citi_content_text">씨티은행 보안카드 확인해줘, 어서~</string>
+    <string name="monitor_scb_content_title">스탠다드차타드은행</string>
+    <string name="monitor_scb_content_text">SC은행 보안카드 확인해줘, 어서~</string>
+    <string name="monitor_unknown_content_title">잘 모르는 은행</string>
+    <string name="monitor_unknown_content_text">몰라! 보안카드! 꼭꼭꼭, 어서~</string>
+    <string name="monitor_content_action">오빵~❤</string>
 </resources>
